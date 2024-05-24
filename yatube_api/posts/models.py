@@ -107,12 +107,12 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following'
+        related_name='users'
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following'
+        related_name='followings'
     )
 
     class Meta:
@@ -123,4 +123,4 @@ class Follow(models.Model):
 
     def __str__(self):
         """Displays user's following in admin panel."""
-        return f'{self.user} подписан на {self.following}'
+        return f'{self.user} подписан(а) на {self.following}'

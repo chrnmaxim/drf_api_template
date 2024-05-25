@@ -65,7 +65,7 @@ class Post(models.Model):
         """Inner Meta class of Post model."""
         verbose_name = 'пост'
         verbose_name_plural = 'Посты'
-        ordering = ('-pub_date',)
+        ordering = ('pub_date',)
 
     def __str__(self):
         """Displays Post text in admin panel."""

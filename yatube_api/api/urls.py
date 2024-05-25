@@ -4,6 +4,8 @@ from rest_framework.authtoken import views
 
 from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 
+API_VER: str = 'v1'
+
 router = routers.DefaultRouter()
 router.register('groups', GroupViewSet)
 router.register('follow', FollowViewSet)
@@ -14,5 +16,7 @@ router.register(
 
 
 urlpatterns = [
-    path('v1/', include(router.urls)),
+    path(f'{API_VER}/', include(router.urls)),
+    path(f'{API_VER}/auth/', include('djoser.urls')),
+    path(f'{API_VER}/auth/', include('djoser.urls.jwt')),
 ]

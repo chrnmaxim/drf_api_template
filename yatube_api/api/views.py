@@ -34,7 +34,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class FollowViewSet(viewsets.ModelViewSet):
     """ViewSet for displaying followings."""
-    queryset = Follow.objects.all()
+    queryset = Follow.objects.filter(user=1)
     serializer_class = FollowSerializer
 
     def perform_create(self, serializer):

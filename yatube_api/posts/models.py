@@ -44,7 +44,8 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts'
+        related_name='posts',
+        verbose_name='Автор'
     )
     image = models.ImageField(
         'Изображение',
@@ -56,7 +57,8 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         related_name='posts',
         blank=True,
-        null=True
+        null=True,
+        verbose_name='Группа'
     )
 
     class Meta:
@@ -75,12 +77,14 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='Автор'
     )
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='Пост'
     )
     text = models.TextField(
         'Текст'
@@ -107,12 +111,14 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='users'
+        related_name='followers',
+        verbose_name='Пользователь'
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='followings'
+        related_name='followings',
+        verbose_name='Подписан'
     )
 
     class Meta:

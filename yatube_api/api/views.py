@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import filters, viewsets, mixins, permissions, pagination
+from rest_framework.pagination import LimitOffsetPagination
 
 from posts.models import Comment, Follow, Group, Post, User
 
@@ -13,7 +14,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet for post's comments."""
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    # permission_classes = (AuthorPermission, )
+    permission_classes = (AuthorPermission, )
 
     def get_post(self):
         return get_object_or_404(Post, id=self.kwargs.get('post_id'))
@@ -32,25 +33,29 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupSerializer
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
     """ViewSet for displaying followings."""
-    queryset = Follow.objects.filter(user=1)
+    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user,
-                        following=self.kwargs.get('username'))
+    permission_classes = (permissions.IsAuthenticated,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('following__username',)
 
     def get_queryset(self):
-        user = User.objects.get(pk=1)
-        return user.users.all()
+        return Follow.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
 
 
 class PostViewSet(viewsets.ModelViewSet):
     """ViewSet for posts."""
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    # permission_classes = (AuthorPermission, )
+    permission_classes = (AuthorPermission, )
+    pagination_class = pagination.LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

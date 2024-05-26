@@ -44,7 +44,6 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='posts',
         verbose_name='Автор'
     )
     image = models.ImageField(
@@ -55,7 +54,6 @@ class Post(models.Model):
     group = models.ForeignKey(
         Group,
         on_delete=models.SET_NULL,
-        related_name='posts',
         blank=True,
         null=True,
         verbose_name='Группа'
@@ -66,6 +64,7 @@ class Post(models.Model):
         verbose_name = 'пост'
         verbose_name_plural = 'Посты'
         ordering = ('pub_date',)
+        default_related_name = 'posts'
 
     def __str__(self):
         """Displays Post text in admin panel."""
@@ -77,13 +76,11 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Автор'
     )
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments',
         verbose_name='Пост'
     )
     text = models.TextField(
@@ -100,6 +97,7 @@ class Comment(models.Model):
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('id',)
+        default_related_name = 'comments'
 
     def __str__(self):
         """Displays Comment text in admin panel."""
@@ -126,6 +124,12 @@ class Follow(models.Model):
         verbose_name = 'подписка'
         verbose_name_plural = 'Подписка'
         ordering = ('id',)
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_following',
+                fields=['user', 'following']
+            )
+        ]
 
     def __str__(self):
         """Displays user's following in admin panel."""
